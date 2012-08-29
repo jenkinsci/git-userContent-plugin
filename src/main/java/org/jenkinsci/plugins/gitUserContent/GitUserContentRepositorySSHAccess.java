@@ -23,7 +23,7 @@ public class GitUserContentRepositorySSHAccess extends RepositoryResolver {
     public ReceivePack createReceivePack(String fullRepositoryName) throws IOException, InterruptedException {
         if (isMine(fullRepositoryName)) {
             Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
-            return new ReceivePack(repo.openRepository());
+            return repo.createReceivePack(repo.openRepository());
         }
 
         return null;

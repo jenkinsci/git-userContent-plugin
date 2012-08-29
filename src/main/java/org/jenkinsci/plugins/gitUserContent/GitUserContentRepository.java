@@ -53,8 +53,17 @@ public class GitUserContentRepository extends HttpGitRepository implements RootA
      */
     @Override
     public ReceivePack createReceivePack(HttpServletRequest context, Repository db) throws ServiceNotEnabledException, ServiceNotAuthorizedException {
-        Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
         Authentication a = Jenkins.getAuthentication();
+
+        ReceivePack rp = createReceivePack(db);
+
+        rp.setRefLogIdent(new PersonIdent(a.getName(), a.getName()+"@"+context.getRemoteAddr()));
+
+        return rp;
+    }
+
+    ReceivePack createReceivePack(Repository db) {
+        Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
 
         ReceivePack rp = new ReceivePack(db);
 
@@ -66,14 +75,6 @@ public class GitUserContentRepository extends HttpGitRepository implements RootA
                     co.setForce(true);
                     co.setName("master");
                     co.call();
-
-//                    Repository repo = rp.getRepository();
-//                    RevWalk revWalk = new RevWalk(repo);
-//                    RevCommit master = revWalk.parseCommit(repo.getRef("master").getObjectId());
-//                    DirCacheCheckout dco = new DirCacheCheckout(repo,
-//                            repo.lockDirCache(), master.getTree());
-//                    dco.setFailOnConflict(false);
-//                    dco.checkout();
                 } catch (Exception e) {
                     StringWriter sw = new StringWriter();
                     e.printStackTrace(new PrintWriter(sw));
@@ -81,9 +82,6 @@ public class GitUserContentRepository extends HttpGitRepository implements RootA
                 }
             }
         });
-
-        rp.setRefLogIdent(new PersonIdent(a.getName(), a.getName()+"@"+context.getRemoteAddr()));
-
         return rp;
     }
 
