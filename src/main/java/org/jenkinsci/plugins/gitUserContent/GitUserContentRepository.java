@@ -4,9 +4,17 @@ import hudson.Extension;
 import hudson.model.RootAction;
 import jenkins.model.Jenkins;
 import org.acegisecurity.Authentication;
+import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
+import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.NoFilepatternException;
+import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.api.errors.NoMessageException;
+import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
 import org.eclipse.jgit.http.server.resolver.DefaultUploadPackFactory;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
@@ -28,6 +36,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -43,8 +53,24 @@ public class GitUserContentRepository extends HttpGitRepository implements RootA
         FileRepository r = new FileRepositoryBuilder().setWorkTree(userContent).build();
 
         // if the repository doesn't exist, create it
-        if (!r.getObjectDatabase().exists())
+        if (!r.getObjectDatabase().exists()) {
             r.create();
+
+            try {
+                // import initial content
+                Git git = new Git(r);
+                AddCommand cmd = git.add();
+                cmd.addFilepattern(".");
+                cmd.call();
+
+                CommitCommand co = git.commit();
+                co.setAuthor("Jenkins","noreply@jenkins-ci.org");
+                co.setMessage("Initial import of the existing contents");
+                co.call();
+            } catch (GitAPIException e) {
+                LOGGER.log(Level.WARNING, "Initial import of userContent into Git repository failed",e);
+            }
+        }
         return r;
     }
 
@@ -104,4 +130,6 @@ public class GitUserContentRepository extends HttpGitRepository implements RootA
     public String getUrlName() {
         return "userContent.git";
     }
+
+    private static final Logger LOGGER = Logger.getLogger(GitUserContentRepository.class.getName());
 }
