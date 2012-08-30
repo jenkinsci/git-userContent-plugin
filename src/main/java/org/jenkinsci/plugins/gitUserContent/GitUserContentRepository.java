@@ -4,9 +4,9 @@ import hudson.Extension;
 import hudson.model.RootAction;
 import jenkins.model.Jenkins;
 import org.acegisecurity.Authentication;
-import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.http.server.resolver.DefaultReceivePackFactory;
+import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.http.server.resolver.DefaultUploadPackFactory;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
@@ -71,10 +71,10 @@ public class GitUserContentRepository extends HttpGitRepository implements RootA
         rp.setPostReceiveHook(new PostReceiveHook() {
             public void onPostReceive(ReceivePack rp, Collection<ReceiveCommand> commands) {
                 try {
-                    CheckoutCommand co = new Git(rp.getRepository()).checkout();
-                    co.setForce(true);
-                    co.setName("master");
-                    co.call();
+                    ResetCommand cmd = new Git(rp.getRepository()).reset();
+                    cmd.setMode(ResetType.HARD);
+                    cmd.setRef("master");
+                    cmd.call();
                 } catch (Exception e) {
                     StringWriter sw = new StringWriter();
                     e.printStackTrace(new PrintWriter(sw));
