@@ -21,11 +21,8 @@ public class GitUserContentRepositorySSHAccess extends RepositoryResolver {
 
     @Override
     public ReceivePack createReceivePack(String fullRepositoryName) throws IOException, InterruptedException {
-        if (isMine(fullRepositoryName)) {
-            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
+        if (isMine(fullRepositoryName))
             return repo.createReceivePack(repo.openRepository());
-        }
-
         return null;
     }
 
@@ -37,6 +34,8 @@ public class GitUserContentRepositorySSHAccess extends RepositoryResolver {
     }
 
     private boolean isMine(String name) {
+        // Depending on the Git URL the client uses, we may or may not get leading '/'.
+        // For example, server:userContent.git vs ssh://server/userContent.git
         if (name.startsWith("/"))
             name = name.substring(1);
         return name.equals("userContent.git");
