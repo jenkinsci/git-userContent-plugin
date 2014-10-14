@@ -3,8 +3,6 @@ package org.jenkinsci.plugins.gitUserContent;
 import hudson.Extension;
 import hudson.model.RootAction;
 import jenkins.model.Jenkins;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.transport.ReceivePack;
 import org.jenkinsci.main.modules.sshd.SSHD;
 import org.jenkinsci.plugins.gitserver.FileBackedHttpGitRepository;
 
