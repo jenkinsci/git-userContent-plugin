@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+    This plugin manages JENKINS_HOME/userContent under Git.
+</div>

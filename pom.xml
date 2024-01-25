@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.532</version>
+    <version>4.76</version>
   </parent>
 
   <artifactId>git-userContent</artifactId>
@@ -15,7 +15,11 @@
   <description>
     This plugin manages JENKINS_HOME/userContent under Git
   </description>
-  <url>http://wiki.jenkins-ci.org/display/JENKINS/Git+userContent+Plugin</url>
+  <url>https://github.com/jenkinsci/git-userContent-plugin</url>
+
+  <properties>
+    <jenkins.version>2.361.4</jenkins.version>
+  </properties>
 
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
@@ -25,8 +29,7 @@
   <licenses>
     <license>
       <name>The MIT license</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
-      <distribution>repo</distribution>
+      <url>https://www.opensource.org/licenses/mit</url>
     </license>
   </licenses>
 
@@ -34,21 +37,26 @@
     <dependency>
       <groupId>org.jenkins-ci.modules</groupId>
       <artifactId>sshd</artifactId>
-      <version>1.1</version>
-      <scope>provided</scope><!-- this is in the core -->
+      <version>3.322.v159e91f6a_550</version>
     </dependency>
 
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>git-server</artifactId>
-      <version>1.6</version>
+      <version>115.v132fd6e5777a_</version>
     </dependency>
   </dependencies>
 
   <repositories>
     <repository>
       <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
+      <url>https://repo.jenkins-ci.org/public/</url>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
